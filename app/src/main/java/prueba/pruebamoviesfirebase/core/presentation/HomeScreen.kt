@@ -9,6 +9,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ExitToApp
 import androidx.compose.material.icons.rounded.Movie
 import androidx.compose.material.icons.rounded.Upcoming
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -39,6 +41,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import prueba.pruebamoviesfirebase.R
+import prueba.pruebamoviesfirebase.login.utils.AuthManager
 import prueba.pruebamoviesfirebase.movieList.presentation.MovieListUiEvent
 import prueba.pruebamoviesfirebase.movieList.presentation.MovieListViewModel
 import prueba.pruebamoviesfirebase.movieList.presentation.PopularMoviesScreen
@@ -47,12 +50,20 @@ import prueba.pruebamoviesfirebase.movieList.util.Screen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavHostController = rememberNavController()) {
+fun HomeScreen(navController: NavHostController = rememberNavController(), auth: AuthManager = AuthManager()) {
 
     val movieListViewModel = hiltViewModel<MovieListViewModel>()
     val movieListState = movieListViewModel.movieListState.collectAsState().value
     val bottomNavController = rememberNavController()
     var showDialog by remember { mutableStateOf(false) }
+    val onLogoutConfirmed: () -> Unit = {
+        auth.signOut()
+        navController.navigate(Screen.LogIn.route) {
+            popUpTo(Screen.LogIn.route) {
+                inclusive = true
+            }
+        }
+    }
 
     Scaffold(bottomBar = {
         BottomNavigationBar(
@@ -87,6 +98,15 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
             }
         )
     }) {
+        Box(modifier = Modifier.padding(it)) {
+            // Muestra el diálogo de confirmación de cierre de sesión si showDialog es true.
+            if (showDialog) {
+                LogoutDialog(onConfirmLogout = {
+                    onLogoutConfirmed()
+                    showDialog = false
+                }, onDismiss = { showDialog = false })
+            }
+        }
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -94,7 +114,7 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
         ) {
             NavHost(
                 navController = bottomNavController,
-                startDestination = Screen.Home.route
+                startDestination = Screen.PopularMovieList.route
             ) {
                 composable(Screen.PopularMovieList.route) {
                     PopularMoviesScreen(
@@ -176,3 +196,26 @@ fun BottomNavigationBar(
 data class BottomItem(
     val title: String, val icon: ImageVector
 )
+
+@Composable
+fun LogoutDialog(onConfirmLogout: () -> Unit, onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Cerrar sesión") },
+        text = { Text("¿Estás seguro que deseas cerrar sesión?") },
+        confirmButton = {
+            Button(
+                onClick = onConfirmLogout
+            ) {
+                Text("Aceptar")
+            }
+        },
+        dismissButton = {
+            Button(
+                onClick = onDismiss
+            ) {
+                Text("Cancelar")
+            }
+        }
+    )
+}
