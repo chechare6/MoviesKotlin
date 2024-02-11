@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "153776068831",
-    "project_id": "pruebasmoviefirebase",
-    "storage_bucket": "pruebasmoviefirebase.appspot.com"
+    "project_number": "11827679271",
+    "project_id": "movieskotlin-b4fae",
+    "storage_bucket": "movieskotlin-b4fae.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:153776068831:android:fa5712f4ad5499a8bcf16a",
+        "mobilesdk_app_id": "1:11827679271:android:09fe6adc6a5941fe467e02",
         "android_client_info": {
           "package_name": "prueba.pruebamoviesfirebase"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDprj6S_aH4n8z8509ZiXz_oTZkHae-iUY"
+          "current_key": "AIzaSyBQn4SdUNYW4ltgcooJIDvSHuRxIbHbjdI"
         }
       ],
       "services": {
