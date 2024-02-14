@@ -1,6 +1,5 @@
 package prueba.pruebamoviesfirebase.details.presentation
 
-import prueba.pruebamoviesfirebase.R
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -38,6 +37,7 @@ import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Size
+import prueba.pruebamoviesfirebase.R
 import prueba.pruebamoviesfirebase.movieList.data.remote.MovieApi
 import prueba.pruebamoviesfirebase.movieList.util.RatingBar
 
@@ -184,6 +184,14 @@ fun DetailsScreen() {
                         modifier = Modifier.padding(start = 16.dp),
                         text = movie.vote_count.toString() + stringResource(R.string.votes)
                     )
+                    /* TODO: aqui iria el favorito (icono de estrella rellena o vacia?
+                       Spacer(modifier = Modifier.height(10.dp))
+
+                       Icon(
+                            modifier = Modifier.padding(start = 16.dp),
+                            painter = movie.favorite
+                       )
+                    */
                 }
             }
         }
@@ -207,5 +215,12 @@ fun DetailsScreen() {
             )
         }
         Spacer(modifier = Modifier.height(32.dp))
+
+        /*
+            TODO:
+             Encontrar manera de saber si viene de POPULAR o de NOW_PLAYING
+             QUE SE VEA MAPA (en NOW_PLAYING)
+             O COMENTARIOS (en POPULAR)
+         */
     }
 }

@@ -82,7 +82,7 @@ fun HomeScreen(navController: NavHostController = rememberNavController(), auth:
             },
             modifier = Modifier.shadow(2.dp),
             colors = TopAppBarDefaults.smallTopAppBarColors(
-                MaterialTheme.colorScheme.inverseOnSurface
+                    MaterialTheme.colorScheme.inverseOnSurface
             ),
             actions = {
                 IconButton(

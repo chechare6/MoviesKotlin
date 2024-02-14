@@ -16,6 +16,7 @@ import androidx.navigation.NavHostController
 import prueba.pruebamoviesfirebase.movieList.presentation.components.MovieItem
 import prueba.pruebamoviesfirebase.movieList.util.Category
 
+/* CAMBIAR A NOW PLAYING */
 @Composable
 fun UpcomingMoviesScreen(
     movieListState: MovieListState,
