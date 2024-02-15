@@ -32,7 +32,7 @@ fun Navigation(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            var analytics: AnalyticsManager = AnalyticsManager(context)
+            val analytics: AnalyticsManager = AnalyticsManager(context)
             val authManager: AuthManager = AuthManager()
             val user: FirebaseUser? = authManager.getCurrentUser()
             NavHost(
@@ -65,12 +65,14 @@ fun Navigation(
                     HomeScreen(navController = navController)
                 }
                 composable(
-                        Screen.Details.route + "/{movieId}",
+                        Screen.Details.route + "/{movieId}?fromPopular={fromPopular}",
                         arguments = listOf(
-                            navArgument("movieId") { type = NavType.IntType }
+                            navArgument("movieId") { type = NavType.IntType },
+                            navArgument("fromPopular") { type = NavType.BoolType }
                         )
                     ) {
-                        DetailsScreen()
+                    val fromPopular = it.arguments?.getBoolean("fromPopular") ?: false
+                    DetailsScreen(fromPopular)
                 }
             }
         }

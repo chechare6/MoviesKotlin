@@ -1,5 +1,6 @@
 package prueba.pruebamoviesfirebase.details.presentation
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -17,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ImageNotSupported
+import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -42,7 +44,7 @@ import prueba.pruebamoviesfirebase.movieList.data.remote.MovieApi
 import prueba.pruebamoviesfirebase.movieList.util.RatingBar
 
 @Composable
-fun DetailsScreen() {
+fun DetailsScreen(fromPopular: Boolean) {
 
     val detailsViewModel = hiltViewModel<DetailsViewModel>()
     val detailsState = detailsViewModel.detailsState.collectAsState().value
@@ -216,11 +218,16 @@ fun DetailsScreen() {
         }
         Spacer(modifier = Modifier.height(32.dp))
 
-        /*
-            TODO:
-             Encontrar manera de saber si viene de POPULAR o de NOW_PLAYING
-             QUE SE VEA MAPA (en NOW_PLAYING)
-             O COMENTARIOS (en POPULAR)
-         */
+        if(!fromPopular){
+            Card(
+                border = BorderStroke(1.dp, Color.Red)
+            ){
+                Text(text = "ESTO ES NOW_PLAYING - AQUI VA EL MAPA")
+            }
+        } else {
+            Card {
+                Text(text = "ESTO ES POPULAR - AQUI VAN LOS COMENTARIOS")
+            }
+        }
     }
 }

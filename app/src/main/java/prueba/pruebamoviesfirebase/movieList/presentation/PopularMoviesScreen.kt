@@ -40,6 +40,7 @@ fun PopularMoviesScreen(
             items(movieListState.popularMovieList.size) { index ->
                 MovieItem(
                     movie = movieListState.popularMovieList[index],
+                    popular = true,
                     navHostController = navController
                 )
                 Spacer(modifier = Modifier.height(16.dp))

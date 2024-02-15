@@ -40,6 +40,7 @@ fun UpcomingMoviesScreen(
             items(movieListState.upcomingMovieList.size) { index ->
                 MovieItem(
                     movie = movieListState.upcomingMovieList[index],
+                    popular = false,
                     navHostController = navController
                 )
                 Spacer(modifier = Modifier.height(16.dp))

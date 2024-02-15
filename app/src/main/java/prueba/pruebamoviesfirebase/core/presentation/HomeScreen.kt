@@ -130,6 +130,9 @@ fun HomeScreen(navController: NavHostController = rememberNavController(), auth:
                         onEvent = movieListViewModel::onEvent
                     )
                 }
+                /*
+                TODO: AQUI VA UNA PESTAÑA PARA LOS FAVORITOS
+                 */
             }
         }
     }

@@ -1,8 +1,5 @@
 package prueba.pruebamoviesfirebase.movieList.presentation.components
 
-import prueba.pruebamoviesfirebase.movieList.util.RatingBar
-import prueba.pruebamoviesfirebase.movieList.util.Screen
-import prueba.pruebamoviesfirebase.movieList.util.getAverageColor
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -45,10 +42,14 @@ import coil.request.ImageRequest
 import coil.size.Size
 import prueba.pruebamoviesfirebase.movieList.data.remote.MovieApi
 import prueba.pruebamoviesfirebase.movieList.domain.model.Movie
+import prueba.pruebamoviesfirebase.movieList.util.RatingBar
+import prueba.pruebamoviesfirebase.movieList.util.Screen
+import prueba.pruebamoviesfirebase.movieList.util.getAverageColor
 
 @Composable
 fun MovieItem(
     movie: Movie,
+    popular: Boolean,
     navHostController: NavHostController
 ) {
     val imageState = rememberAsyncImagePainter(
@@ -78,7 +79,7 @@ fun MovieItem(
                 )
             )
             .clickable {
-                navHostController.navigate(Screen.Details.route + "/${movie.id}")
+                navHostController.navigate(Screen.Details.route + "/${movie.id}?fromPopular=" + popular)
             }
     ) {
         if (imageState is AsyncImagePainter.State.Error) {
