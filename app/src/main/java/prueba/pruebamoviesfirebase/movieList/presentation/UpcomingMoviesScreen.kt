@@ -48,9 +48,7 @@ fun UpcomingMoviesScreen(
                 if (index >= movieListState.upcomingMovieList.size - 1 && !movieListState.isLoading) {
                     onEvent(MovieListUiEvent.Paginate(Category.UPCOMING))
                 }
-
             }
         }
     }
-
 }

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ExitToApp
+import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.Movie
 import androidx.compose.material.icons.rounded.Upcoming
 import androidx.compose.material3.AlertDialog
@@ -42,6 +43,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import prueba.pruebamoviesfirebase.R
 import prueba.pruebamoviesfirebase.login.utils.AuthManager
+import prueba.pruebamoviesfirebase.movieList.presentation.FavoritesMoviesScreen
 import prueba.pruebamoviesfirebase.movieList.presentation.MovieListUiEvent
 import prueba.pruebamoviesfirebase.movieList.presentation.MovieListViewModel
 import prueba.pruebamoviesfirebase.movieList.presentation.PopularMoviesScreen
@@ -73,10 +75,12 @@ fun HomeScreen(navController: NavHostController = rememberNavController(), auth:
         TopAppBar(
             title = {
                 Text(
-                    text = if (movieListState.isCurrentPopularScreen)
-                        stringResource(R.string.popular_movies)
-                    else
-                        stringResource(R.string.upcoming_movies),
+                    text = when(movieListState.isScreen)
+                    {
+                        0 -> stringResource(R.string.popular_movies)
+                        1 -> stringResource(R.string.upcoming_movies)
+                        else -> stringResource(R.string.favorite_movies)
+                    },
                     fontSize = 20.sp
                 )
             },
@@ -123,6 +127,13 @@ fun HomeScreen(navController: NavHostController = rememberNavController(), auth:
                         onEvent = movieListViewModel::onEvent
                     )
                 }
+                composable(Screen.FavoritesMovieList.route) {
+                    FavoritesMoviesScreen(
+                        navController = navController,
+                        movieListState = movieListState,
+                        onEvent = movieListViewModel::onEvent
+                    )
+                }
                 composable(Screen.UpcomingMovieList.route) {
                     UpcomingMoviesScreen(
                         navController = navController,
@@ -130,9 +141,6 @@ fun HomeScreen(navController: NavHostController = rememberNavController(), auth:
                         onEvent = movieListViewModel::onEvent
                     )
                 }
-                /*
-                TODO: AQUI VA UNA PESTAÑA PARA LOS FAVORITOS
-                 */
             }
         }
     }
@@ -152,6 +160,9 @@ fun BottomNavigationBar(
         ), BottomItem(
             title = stringResource(R.string.upcoming),
             icon = Icons.Rounded.Upcoming
+        ), BottomItem(
+            title = stringResource(R.string.favorites),
+            icon = Icons.Rounded.Favorite
         )
     )
 
@@ -168,15 +179,21 @@ fun BottomNavigationBar(
                     selected.intValue = index
                     when (selected.intValue) {
                         0 -> {
-                            onEvent(MovieListUiEvent.Navigate)
+                            onEvent(MovieListUiEvent.Navigate(0))
                             bottomNavController.popBackStack()
                             bottomNavController.navigate(Screen.PopularMovieList.route)
                         }
 
                         1 -> {
-                            onEvent(MovieListUiEvent.Navigate)
+                            onEvent(MovieListUiEvent.Navigate(1))
                             bottomNavController.popBackStack()
                             bottomNavController.navigate(Screen.UpcomingMovieList.route)
+                        }
+
+                        2 -> {
+                            onEvent(MovieListUiEvent.Navigate(2))
+                            bottomNavController.popBackStack()
+                            bottomNavController.navigate(Screen.FavoritesMovieList.route)
                         }
                     }
                 }, icon = {

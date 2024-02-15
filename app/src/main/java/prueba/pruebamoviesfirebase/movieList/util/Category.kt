@@ -5,4 +5,5 @@ object Category {
     const val POPULAR = "popular"
     const val UPCOMING = "upcoming"
     const val NOW_PLAYING = "now_playing"
+    const val FAVORITES = "favorites"
 }

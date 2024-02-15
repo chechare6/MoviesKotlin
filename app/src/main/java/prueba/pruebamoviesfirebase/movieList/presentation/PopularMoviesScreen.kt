@@ -23,7 +23,6 @@ fun PopularMoviesScreen(
     navController: NavHostController,
     onEvent: (MovieListUiEvent) -> Unit
 ) {
-
     if (movieListState.popularMovieList.isEmpty()) {
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -48,9 +47,7 @@ fun PopularMoviesScreen(
                 if (index >= movieListState.popularMovieList.size - 1 && !movieListState.isLoading) {
                     onEvent(MovieListUiEvent.Paginate(Category.POPULAR))
                 }
-
             }
         }
     }
-
 }
