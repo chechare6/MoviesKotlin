@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,12 +21,20 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material.icons.rounded.ImageNotSupported
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,6 +42,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,11 +52,20 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Size
 import prueba.pruebamoviesfirebase.R
+import prueba.pruebamoviesfirebase.login.utils.AuthManager
 import prueba.pruebamoviesfirebase.movieList.data.remote.MovieApi
 import prueba.pruebamoviesfirebase.movieList.util.RatingBar
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailsScreen(fromPopular: Boolean) {
+    //-------
+    var cmn by rememberSaveable {mutableStateOf("")}
+    var comentarios by rememberSaveable { mutableStateOf(listOf<String>()) }
+    var auth: AuthManager = AuthManager()
+    val user = auth.getCurrentUser()
+    //--------
+
 
     val detailsViewModel = hiltViewModel<DetailsViewModel>()
     val detailsState = detailsViewModel.detailsState.collectAsState().value
@@ -222,6 +241,13 @@ fun DetailsScreen(fromPopular: Boolean) {
         }
         Spacer(modifier = Modifier.height(32.dp))
 
+        // Mostrar comentarios
+        comentarios.forEach { comentario ->
+            var cadena = "${user?.email} ha dicho: $comentario"
+            Text(text = cadena)
+            Spacer(modifier = Modifier.height(4.dp))
+        }
+
         if(!fromPopular){
             Card(
                 border = BorderStroke(1.dp, Color.Red)
@@ -229,8 +255,46 @@ fun DetailsScreen(fromPopular: Boolean) {
                 Text(text = "ESTO ES NOW_PLAYING - AQUI VA EL MAPA")
             }
         } else {
-            Card {
-                Text(text = "ESTO ES POPULAR - AQUI VAN LOS COMENTARIOS")
+            Card(
+                modifier = Modifier.fillMaxSize(),
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.Top
+                ) {
+                    Text(
+                        text = "Deja tu comentario",
+                        style = TextStyle(
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+
+                    TextField(
+                        value = cmn,
+                        onValueChange = {
+                            cmn = it
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    //Agregamos el boton
+                    Button(
+                        onClick = {
+                            if (cmn.isNotBlank()) {
+                                comentarios = listOf(cmn) + comentarios
+                                cmn = ""
+                            }
+                        },
+                        modifier = Modifier.align(Alignment.End)
+                    ) {
+                        Text(text = "Publicar")
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+
+                }
             }
         }
     }
