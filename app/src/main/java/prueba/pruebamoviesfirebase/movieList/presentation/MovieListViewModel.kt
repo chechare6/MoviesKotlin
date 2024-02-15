@@ -127,4 +127,8 @@ class MovieListViewModel @Inject constructor(
         }
     }
 
+    private fun getFavoriteMovies(forceFetchFromRemote: Boolean) {
+
+    }
+
 }

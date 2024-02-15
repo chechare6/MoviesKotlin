@@ -134,7 +134,7 @@ fun HomeScreen(navController: NavHostController = rememberNavController(), auth:
                         onEvent = movieListViewModel::onEvent
                     )
                 }
-                composable(Screen.UpcomingMovieList.route) {
+                composable(Screen.NowPlayingMovieList.route) {
                     UpcomingMoviesScreen(
                         navController = navController,
                         movieListState = movieListState,
@@ -187,7 +187,7 @@ fun BottomNavigationBar(
                         1 -> {
                             onEvent(MovieListUiEvent.Navigate(1))
                             bottomNavController.popBackStack()
-                            bottomNavController.navigate(Screen.UpcomingMovieList.route)
+                            bottomNavController.navigate(Screen.NowPlayingMovieList.route)
                         }
 
                         2 -> {

@@ -7,6 +7,7 @@ data class MovieListState(
 
     val popularMovieListPage: Int = 1,
     val upcomingMovieListPage: Int = 1,
+    val favoritesMovieListPage: Int = 1,
 
     val isScreen: Int = 0,
 
