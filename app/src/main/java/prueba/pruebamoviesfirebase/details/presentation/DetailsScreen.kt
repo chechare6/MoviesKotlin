@@ -195,7 +195,7 @@ fun DetailsScreen(fromPopular: Boolean) {
                         modifier = Modifier
                             .padding(start = 16.dp)
                             .clickable {
-
+                                /* TODO AQUI HAY QUE HACER LA FUNCION */
                             }
                     )
                 }
@@ -235,3 +235,5 @@ fun DetailsScreen(fromPopular: Boolean) {
         }
     }
 }
+
+
