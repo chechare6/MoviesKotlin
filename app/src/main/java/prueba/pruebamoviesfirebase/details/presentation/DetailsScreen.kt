@@ -3,6 +3,7 @@ package prueba.pruebamoviesfirebase.details.presentation
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,6 +18,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material.icons.rounded.ImageNotSupported
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
@@ -186,14 +188,17 @@ fun DetailsScreen(fromPopular: Boolean) {
                         modifier = Modifier.padding(start = 16.dp),
                         text = movie.vote_count.toString() + stringResource(R.string.votes)
                     )
-                    /* TODO: aqui iria el favorito (icono de estrella rellena o vacia?
-                       Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Icon(
+                        imageVector = Icons.Rounded.FavoriteBorder,
+                        contentDescription = "Fav Icon",
+                        modifier = Modifier
+                            .padding(start = 16.dp)
+                            .clickable {
 
-                       Icon(
-                            modifier = Modifier.padding(start = 16.dp),
-                            painter = movie.favorite
-                       )
-                    */
+                            }
+                    )
+
                 }
             }
         }
