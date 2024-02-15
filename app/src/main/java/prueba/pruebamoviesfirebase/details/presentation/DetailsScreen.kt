@@ -198,14 +198,6 @@ fun DetailsScreen(fromPopular: Boolean) {
 
                             }
                     )
-                    /* TODO: aqui iria el favorito (icono de estrella rellena o vacia?
-                       Spacer(modifier = Modifier.height(10.dp))
-
-                       Icon(
-                            modifier = Modifier.padding(start = 16.dp),
-                            painter = movie.favorite
-                       )
-                    */
                 }
             }
         }
