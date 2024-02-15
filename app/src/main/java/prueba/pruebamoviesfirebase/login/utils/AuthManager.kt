@@ -4,6 +4,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.auth
+import com.google.firebase.database.core.Context
 import kotlinx.coroutines.tasks.await
 
 //ASÍ ES LA ESTRUCTURA DE MOVIESDB
@@ -27,7 +28,7 @@ Es lo mismo de maneras distintas, igual podríamos adaptar la clase
 para utilizar 'Resources' y ahorrarnos esta clase??
  */
 
-class AuthManager {
+class AuthManager(private val context: Context) {
     private val auth: FirebaseAuth by lazy { Firebase.auth }
 
     suspend fun signInAnonymously(): AuthRes<FirebaseUser> {

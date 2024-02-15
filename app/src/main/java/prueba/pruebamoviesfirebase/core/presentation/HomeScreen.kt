@@ -63,7 +63,10 @@ import prueba.pruebamoviesfirebase.movieList.util.Screen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavHostController = rememberNavController(), auth: AuthManager = AuthManager()) {
+fun HomeScreen(navController: NavHostController = rememberNavController(), auth: AuthManager = AuthManager(
+    context
+)
+) {
 
     val movieListViewModel = hiltViewModel<MovieListViewModel>()
     val movieListState = movieListViewModel.movieListState.collectAsState().value
