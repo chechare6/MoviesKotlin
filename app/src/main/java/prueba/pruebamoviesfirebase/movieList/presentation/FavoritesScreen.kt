@@ -23,7 +23,7 @@ fun FavoritesMoviesScreen(
     navController: NavHostController,
     onEvent: (MovieListUiEvent) -> Unit
 ) {
-    if(movieListState.favoritesMovieList.isEmpty()){
+    if (movieListState.favoritesMovieList.isEmpty()) {
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
@@ -43,7 +43,7 @@ fun FavoritesMoviesScreen(
                     navHostController = navController
                 )
                 Spacer(modifier = Modifier.height(16.dp))
-                if(index >= movieListState.favoritesMovieList.size -1 && !movieListState.isLoading) {
+                if (index >= movieListState.favoritesMovieList.size - 1 && !movieListState.isLoading) {
                     onEvent(MovieListUiEvent.Paginate(Category.FAVORITES))
                 }
             }

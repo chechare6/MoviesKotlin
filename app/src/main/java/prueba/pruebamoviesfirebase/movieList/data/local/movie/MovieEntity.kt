@@ -18,8 +18,8 @@ data class MovieEntity(
     val video: Boolean,
     val vote_average: Double,
     val vote_count: Int,
-    // FAVORITO
-    val isFavorite: Boolean = false,
+    /* FAVORITO
+    val isFavorite: Boolean = false, */
 
     @PrimaryKey
     val id: Int,

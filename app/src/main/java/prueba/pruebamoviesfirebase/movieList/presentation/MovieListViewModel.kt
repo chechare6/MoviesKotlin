@@ -8,8 +8,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import prueba.pruebamoviesfirebase.movieList.data.local.movie.MovieDao
-import prueba.pruebamoviesfirebase.movieList.data.local.movie.MovieEntity
 import prueba.pruebamoviesfirebase.movieList.domain.repository.MovieListRepository
 import prueba.pruebamoviesfirebase.movieList.util.Category
 import prueba.pruebamoviesfirebase.movieList.util.Resource
@@ -18,8 +16,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MovieListViewModel @Inject constructor(
     private val movieListRepository: MovieListRepository,
-    // FAVORITO
-    private val movieDao: MovieDao
+    /* FAVORITO
+    private val movieDao: MovieDao */
 ) : ViewModel() {
 
     //view model y parametros que utilizamos
@@ -131,7 +129,7 @@ class MovieListViewModel @Inject constructor(
         }
     }
 
-    // FAVORITO
+    /* FAVORITO
     fun addToFavorite(movie: MovieEntity) {
         viewModelScope.launch {
             movieDao.insertFavoriteMovie(movie)
@@ -143,6 +141,6 @@ class MovieListViewModel @Inject constructor(
         viewModelScope.launch {
             movieDao.deleteFavoriteMovie(movie)
         }
-    }
+    } */
 
 }

@@ -1,13 +1,13 @@
 package prueba.pruebamoviesfirebase.movieList.data.repository
 
-import prueba.pruebamoviesfirebase.movieList.data.local.movie.MovieDatabase
-import prueba.pruebamoviesfirebase.movieList.data.remote.respond.MovieDto
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import okio.IOException
+import prueba.pruebamoviesfirebase.movieList.data.local.movie.MovieDatabase
 import prueba.pruebamoviesfirebase.movieList.data.mappers.toMovie
 import prueba.pruebamoviesfirebase.movieList.data.mappers.toMovieEntity
 import prueba.pruebamoviesfirebase.movieList.data.remote.MovieApi
+import prueba.pruebamoviesfirebase.movieList.data.remote.respond.MovieDto
 import prueba.pruebamoviesfirebase.movieList.domain.model.Movie
 import prueba.pruebamoviesfirebase.movieList.domain.repository.MovieListRepository
 import prueba.pruebamoviesfirebase.movieList.util.Resource
@@ -100,4 +100,19 @@ class MovieListRepositoryImpl @Inject constructor(
 
         }
     }
+
+    /* FAVORITO
+    override suspend fun isFavoriteMovie(movieId: Int): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    // FAVORITO
+    override suspend fun addToFavorite(movie: Movie) {
+        TODO("Not yet implemented")
+    }
+
+    // FAVORITO
+    override suspend fun removeFromFavorite(movieId: Int) {
+        TODO("Not yet implemented")
+    } */
 }

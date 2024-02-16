@@ -106,4 +106,11 @@ dependencies {
     //FIREBASE ------------------------------
     implementation(platform("com.google.firebase:firebase-bom:32.7.2"))
     implementation("com.google.firebase:firebase-analytics")
+
+    //MAPS ----------------------------------
+    implementation("com.google.maps.android:maps-compose:1.2.0")
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
+    implementation("com.google.android.libraries.places:places:3.3.0")
+    implementation("com.google.maps.android:maps-ktx:3.2.1")
+    implementation("com.google.maps.android:places-ktx:2.0.0")
 }
