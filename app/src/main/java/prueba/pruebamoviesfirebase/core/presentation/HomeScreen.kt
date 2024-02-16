@@ -42,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -63,7 +64,8 @@ import prueba.pruebamoviesfirebase.movieList.util.Screen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavHostController = rememberNavController(), auth: AuthManager = AuthManager()) {
+fun HomeScreen(navController: NavHostController = rememberNavController(), auth: AuthManager = AuthManager(LocalContext.current)
+) {
 
     val movieListViewModel = hiltViewModel<MovieListViewModel>()
     val movieListState = movieListViewModel.movieListState.collectAsState().value

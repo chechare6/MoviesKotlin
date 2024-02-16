@@ -1,5 +1,6 @@
 package prueba.pruebamoviesfirebase.login.utils
 
+import android.content.Context
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -27,7 +28,7 @@ Es lo mismo de maneras distintas, igual podríamos adaptar la clase
 para utilizar 'Resources' y ahorrarnos esta clase??
  */
 
-class AuthManager {
+class AuthManager(private val context: Context) {
     private val auth: FirebaseAuth by lazy { Firebase.auth }
 
     suspend fun signInAnonymously(): AuthRes<FirebaseUser> {

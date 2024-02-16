@@ -55,6 +55,8 @@ class DetailsViewModel @Inject constructor(
                             }
                         }
                     }
+
+                    else -> {}
                 }
             }
         }
