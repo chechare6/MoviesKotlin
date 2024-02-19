@@ -15,8 +15,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ExitToApp
 import androidx.compose.material.icons.rounded.Favorite
+import androidx.compose.material.icons.rounded.LocalMovies
 import androidx.compose.material.icons.rounded.Movie
-import androidx.compose.material.icons.rounded.Upcoming
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -59,12 +59,14 @@ import prueba.pruebamoviesfirebase.movieList.presentation.FavoritesMoviesScreen
 import prueba.pruebamoviesfirebase.movieList.presentation.MovieListUiEvent
 import prueba.pruebamoviesfirebase.movieList.presentation.MovieListViewModel
 import prueba.pruebamoviesfirebase.movieList.presentation.PopularMoviesScreen
-import prueba.pruebamoviesfirebase.movieList.presentation.UpcomingMoviesScreen
+import prueba.pruebamoviesfirebase.movieList.presentation.now_playingMoviesScreen
 import prueba.pruebamoviesfirebase.movieList.util.Screen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavHostController = rememberNavController(), auth: AuthManager = AuthManager(LocalContext.current)
+fun HomeScreen(
+    navController: NavHostController = rememberNavController(),
+    auth: AuthManager = AuthManager(LocalContext.current)
 ) {
 
     val movieListViewModel = hiltViewModel<MovieListViewModel>()
@@ -177,7 +179,7 @@ fun HomeScreen(navController: NavHostController = rememberNavController(), auth:
                     )
                 }
                 composable(Screen.NowPlayingMovieList.route) {
-                    UpcomingMoviesScreen(
+                    now_playingMoviesScreen(
                         navController = navController,
                         movieListState = movieListState,
                         onEvent = movieListViewModel::onEvent
@@ -200,8 +202,8 @@ fun BottomNavigationBar(
             title = stringResource(R.string.popular),
             icon = Icons.Rounded.Movie
         ), BottomItem(
-            title = stringResource(R.string.upcoming),
-            icon = Icons.Rounded.Upcoming
+            title = stringResource(R.string.now_playing),
+            icon = Icons.Rounded.LocalMovies
         ), BottomItem(
             title = stringResource(R.string.favorites),
             icon = Icons.Rounded.Favorite

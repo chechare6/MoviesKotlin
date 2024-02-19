@@ -1,28 +1,48 @@
+package prueba.pruebamoviesfirebase.mapas.data
+
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.content.Context
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest
-import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse
+import com.google.android.libraries.places.api.model.RectangularBounds
+import com.google.android.libraries.places.api.net.PlacesClient
+import com.google.android.libraries.places.api.net.SearchByTextRequest
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import prueba.pruebamoviesfirebase.mapas.data.Cinema
-import prueba.pruebamoviesfirebase.mapas.data.Geometry
-import prueba.pruebamoviesfirebase.mapas.data.Location
+import kotlin.math.cos
 
 class LocationViewModel : ViewModel() {
-    val userLocation = mutableStateOf<LatLng?>(null)
-    val isLocationPermissionGranted = mutableStateOf(false)
+    private val userLocation = mutableStateOf<LatLng?>(null)
+    private val isLocationPermissionGranted = mutableStateOf(false)
     private val _cinemas = MutableStateFlow<List<Cinema>>(emptyList())
     val cinemas: StateFlow<List<Cinema>> = _cinemas
+
+    fun searchPlaces(placesClient: PlacesClient): List<Place> {
+        val placeFields = listOf(Place.Field.ID, Place.Field.NAME)
+        val radiusMeters = 1000.0 // Radio de búsqueda en metros
+        val bounds = calculateBoundsAroundUserLocation(userLocation.value, radiusMeters)
+        val searchByTextRequest = SearchByTextRequest.builder("Cinemas", placeFields)
+            .setMaxResultCount(5)
+            .setLocationRestriction(bounds)
+            .build()
+        var places: List<Place> = listOf()
+        placesClient.searchByText(searchByTextRequest)
+            .addOnSuccessListener { response ->
+                places = response.places
+            }
+        return places
+    }
+
+
+
+
 
     @Composable
     fun getUserLocation(context: Context) {
@@ -60,49 +80,26 @@ class LocationViewModel : ViewModel() {
         }
     }
 
-    fun nearbySearch(context: Context) {
-        val userLocation = userLocation.value
+    private fun calculateBoundsAroundUserLocation(userLocation: LatLng?, radiusMeters: Double): RectangularBounds {
+        // Calcula la distancia en grados de longitud correspondiente a "radiusMeters" metros
+        userLocation.let {
+            val longitudeDelta = radiusMeters / (111320 * cos((userLocation?.latitude ?: 1.0) * Math.PI / 180))
+            // Calcula la distancia en grados de latitud correspondiente a "radiusMeters" metros
+            val latitudeDelta = radiusMeters / 110574
 
-        if (userLocation != null) {
-            // Initialize Places if not initialized
-            if (!Places.isInitialized()) {
-                Places.initialize(context, "YOUR_API_KEY")
-            }
+            // Calcula las coordenadas de la esquina suroeste del rectángulo
+            val southWest = LatLng(
+                userLocation?.latitude?.minus(latitudeDelta) ?: 0.0,
+                userLocation?.longitude?.minus(longitudeDelta) ?: 0.0
+            )
 
-            // Create Places client
-            val placesClient = Places.createClient(context)
-
-            // Define fields to retrieve from nearby places
-            val placeFields = listOf(Place.Field.NAME, Place.Field.LAT_LNG)
-
-            // Create nearby search request (for cinemas in this case)
-            val request = FindCurrentPlaceRequest.newInstance(placeFields)
-
-            // Perform nearby places search
-            val nearbyCinemas = mutableListOf<Cinema>()
-            placesClient.findCurrentPlace(request).addOnSuccessListener { response: FindCurrentPlaceResponse ->
-                for (placeLikelihood in response.placeLikelihoods) {
-                    val place = placeLikelihood.place
-                    nearbyCinemas.add(
-                        Cinema(
-                            name = place.name ?: "",
-                            geometry = Geometry(
-                                location = Location(
-                                    lat = place.latLng?.latitude ?: 0.0,
-                                    lng = place.latLng?.longitude ?: 0.0
-                                )
-                            )
-                        )
-                    )
-                }
-                _cinemas.value = nearbyCinemas
-            }.addOnFailureListener { exception: Exception ->
-                // Handle search failures
-                exception.printStackTrace()
-            }
-        } else {
-            // Handle case where user location is not available
-            _cinemas.value = emptyList()
+            // Calcula las coordenadas de la esquina noreste del rectángulo
+            val northEast = LatLng(
+                userLocation?.latitude?.plus(latitudeDelta) ?: 0.0,
+                userLocation?.longitude?.plus(longitudeDelta) ?: 0.0
+            )
+            return RectangularBounds.newInstance(southWest, northEast)
         }
+        // Crea y devuelve el objeto RectangularBounds con las coordenadas calculadas
     }
 }

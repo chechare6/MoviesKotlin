@@ -18,13 +18,13 @@ import prueba.pruebamoviesfirebase.movieList.util.Category
 
 /* CAMBIAR A NOW PLAYING */
 @Composable
-fun UpcomingMoviesScreen(
+fun now_playingMoviesScreen(
     movieListState: MovieListState,
     navController: NavHostController,
     onEvent: (MovieListUiEvent) -> Unit
 ) {
 
-    if (movieListState.upcomingMovieList.isEmpty()) {
+    if (movieListState.nowPlayingMovieList.isEmpty()) {
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
@@ -37,16 +37,16 @@ fun UpcomingMoviesScreen(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(vertical = 8.dp, horizontal = 4.dp)
         ) {
-            items(movieListState.upcomingMovieList.size) { index ->
+            items(movieListState.nowPlayingMovieList.size) { index ->
                 MovieItem(
-                    movie = movieListState.upcomingMovieList[index],
+                    movie = movieListState.nowPlayingMovieList[index],
                     popular = false,
                     navHostController = navController
                 )
                 Spacer(modifier = Modifier.height(16.dp))
 
-                if (index >= movieListState.upcomingMovieList.size - 1 && !movieListState.isLoading) {
-                    onEvent(MovieListUiEvent.Paginate(Category.UPCOMING))
+                if (index >= movieListState.nowPlayingMovieList.size - 1 && !movieListState.isLoading) {
+                    onEvent(MovieListUiEvent.Paginate(Category.NOW_PLAYING))
                 }
             }
         }

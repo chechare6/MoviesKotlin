@@ -257,9 +257,12 @@ fun DetailsScreen(fromPopular: Boolean) {
             )
             Card(
                 border = BorderStroke(2.dp, MaterialTheme.colorScheme.inverseOnSurface),
-                modifier = Modifier.height(400.dp)
+                modifier = Modifier
+                    .height(350.dp)
+                    .padding(16.dp)
             ){
-                Map()
+
+                //Map()
             }
         } else {
             Card(
@@ -309,7 +312,9 @@ fun Map(){
     GoogleMap(
         modifier = Modifier.fillMaxSize(),
         properties = MapProperties(isMyLocationEnabled = true)
-    )
+    ) {
+
+    }
 }
 
 

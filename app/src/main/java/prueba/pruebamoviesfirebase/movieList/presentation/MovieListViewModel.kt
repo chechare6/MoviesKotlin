@@ -26,7 +26,7 @@ class MovieListViewModel @Inject constructor(
 
     init {
         getPopularMovieList(false)
-        getUpcomingMovieList(false)
+        getnowPlayingMovieList(false)
     }
 
     fun onEvent(event: MovieListUiEvent) {
@@ -34,8 +34,8 @@ class MovieListViewModel @Inject constructor(
             is MovieListUiEvent.Paginate -> {
                 if (event.category == Category.POPULAR) {
                     getPopularMovieList(true)
-                } else if (event.category == Category.UPCOMING) {
-                    getUpcomingMovieList(true)
+                } else if (event.category == Category.now_playing) {
+                    getnowPlayingMovieList(true)
                 }
             }
 
@@ -71,7 +71,7 @@ class MovieListViewModel @Inject constructor(
                             _movieListState.update { movieList ->
                                 movieList.copy(
                                     popularMovieList = movieListState.value.popularMovieList
-                                            + popularList.sortedBy { it.popularity }, //ESTO ORDENA SEGÚN EL PARÁMETRO QUE QUERAMOS
+                                            + popularList.sortedByDescending { it.vote_average }, //ESTO ORDENA SEGÚN EL PARÁMETRO QUE QUERAMOS
                                     popularMovieListPage = movieListState.value.popularMovieListPage + 1
                                 )
                             }
@@ -89,7 +89,7 @@ class MovieListViewModel @Inject constructor(
     }
 
     //GET de las próximas peliculas  - comprueba si tenemos que coger la info de la API o podemos desde la BBDD interna (room)
-    private fun getUpcomingMovieList(forceFetchFromRemote: Boolean) {
+    private fun getnowPlayingMovieList(forceFetchFromRemote: Boolean) {
         viewModelScope.launch {
             _movieListState.update {
                 it.copy(isLoading = true)
@@ -98,7 +98,7 @@ class MovieListViewModel @Inject constructor(
             movieListRepository.getMovieList(
                 forceFetchFromRemote,
                 Category.NOW_PLAYING,
-                movieListState.value.upcomingMovieListPage
+                movieListState.value.nowPlayingMovieListPage
             ).collectLatest { result ->
                 when (result) {
                     is Resource.Error -> {
@@ -108,12 +108,12 @@ class MovieListViewModel @Inject constructor(
                     }
 
                     is Resource.Success -> {
-                        result.data?.let { upcomingList ->
+                        result.data?.let { now_playingList ->
                             _movieListState.update { movieList ->
                                 movieList.copy(
-                                    upcomingMovieList = movieListState.value.upcomingMovieList
-                                            + upcomingList.sortedBy{ it.title }, //ESTO ORDENA SEGÚN EL PARÁMETRO QUE QUERAMOS
-                                    upcomingMovieListPage = movieListState.value.upcomingMovieListPage + 1
+                                    nowPlayingMovieList = movieListState.value.nowPlayingMovieList
+                                            + now_playingList.sortedByDescending{ it.release_date }, //ESTO ORDENA SEGÚN EL PARÁMETRO QUE QUERAMOS
+                                    nowPlayingMovieListPage = movieListState.value.nowPlayingMovieListPage + 1
                                 )
                             }
                         }
