@@ -1,8 +1,12 @@
 package prueba.pruebamoviesfirebase.mapas.data
 
+data class NearbyCinemasResponse(
+    val results: List<Cinema>
+)
+
 data class Cinema(
-    val geometry: Geometry,
-    val name: String
+    val name: String,
+    val geometry: Geometry
 )
 
 data class Geometry(
@@ -12,8 +16,4 @@ data class Geometry(
 data class Location(
     val lat: Double,
     val lng: Double
-)
-
-data class Cinemas(
-    val cines: List<Cinema>
 )

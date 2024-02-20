@@ -66,7 +66,7 @@ import prueba.pruebamoviesfirebase.movieList.util.Screen
 @Composable
 fun HomeScreen(
     navController: NavHostController = rememberNavController(),
-    auth: AuthManager = AuthManager(LocalContext.current)
+    auth: AuthManager = AuthManager(LocalContext.current),
 ) {
 
     val movieListViewModel = hiltViewModel<MovieListViewModel>()

@@ -50,10 +50,9 @@ import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Size
-import com.google.maps.android.compose.GoogleMap
-import com.google.maps.android.compose.MapProperties
 import prueba.pruebamoviesfirebase.R
 import prueba.pruebamoviesfirebase.login.utils.AuthManager
+import prueba.pruebamoviesfirebase.mapas.presentation.Map
 import prueba.pruebamoviesfirebase.movieList.data.remote.MovieApi
 import prueba.pruebamoviesfirebase.movieList.util.RatingBar
 
@@ -67,7 +66,7 @@ fun DetailsScreen(fromPopular: Boolean) {
     val user = auth.getCurrentUser()
     //--------
 
-
+    //MAPAS
     val detailsViewModel = hiltViewModel<DetailsViewModel>()
     val detailsState = detailsViewModel.detailsState.collectAsState().value
 
@@ -258,15 +257,15 @@ fun DetailsScreen(fromPopular: Boolean) {
             Card(
                 border = BorderStroke(2.dp, MaterialTheme.colorScheme.inverseOnSurface),
                 modifier = Modifier
-                    .height(350.dp)
-                    .padding(16.dp)
+                    .height(450.dp)
+                    .padding(10.dp)
             ){
-
-                //Map()
+                Map()
             }
         } else {
             Card(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize()
+                    .padding(10.dp),
             ) {
                 Column(
                     modifier = Modifier.padding(16.dp),
@@ -306,15 +305,3 @@ fun DetailsScreen(fromPopular: Boolean) {
         }
     }
 }
-
-@Composable
-fun Map(){
-    GoogleMap(
-        modifier = Modifier.fillMaxSize(),
-        properties = MapProperties(isMyLocationEnabled = true)
-    ) {
-
-    }
-}
-
-

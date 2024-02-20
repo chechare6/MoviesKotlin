@@ -32,9 +32,10 @@ fun Navigation(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            val analytics: AnalyticsManager = AnalyticsManager(context)
-            val authManager: AuthManager = AuthManager(context)
+            val analytics = AnalyticsManager(context)
+            val authManager = AuthManager(context)
             val user: FirebaseUser? = authManager.getCurrentUser()
+
             NavHost(
                 navController = navController,
                 startDestination = if(user == null) Screen.LogIn.route else Screen.Home.route

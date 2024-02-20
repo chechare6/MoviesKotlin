@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,6 +17,7 @@ import prueba.pruebamoviesfirebase.movieList.presentation.components.MovieItem
 import prueba.pruebamoviesfirebase.movieList.util.Category
 
 //SCREEN DE LA PANTALLA DE FAVORITOS
+
 @Composable
 fun FavoritesMoviesScreen(
     movieListState: MovieListState,
@@ -28,7 +29,7 @@ fun FavoritesMoviesScreen(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            CircularProgressIndicator()
+                Text(text = "No se han encontrado películas favoritas")
         }
     } else {
         LazyVerticalGrid(
