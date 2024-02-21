@@ -1,5 +1,7 @@
 package prueba.pruebamoviesfirebase.details.presentation
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,6 +21,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.AddComment
+import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material.icons.rounded.ImageNotSupported
 import androidx.compose.material3.Button
@@ -31,6 +35,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -51,6 +56,10 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Size
 import prueba.pruebamoviesfirebase.R
+import prueba.pruebamoviesfirebase.details.presentation.comments.presentation.CommentViewModel
+import prueba.pruebamoviesfirebase.details.presentation.comments.presentation.CommentsEvents
+import prueba.pruebamoviesfirebase.favorites.Favorita
+import prueba.pruebamoviesfirebase.favorites.RealtimeManager
 import prueba.pruebamoviesfirebase.login.utils.AuthManager
 import prueba.pruebamoviesfirebase.mapas.presentation.Map
 import prueba.pruebamoviesfirebase.movieList.data.remote.MovieApi
@@ -59,23 +68,15 @@ import prueba.pruebamoviesfirebase.movieList.util.RatingBar
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailsScreen(fromPopular: Boolean) {
-    //-------
-    var cmn by rememberSaveable {mutableStateOf("")}
-    var comentarios by rememberSaveable { mutableStateOf(listOf<String>()) }
-    val auth = AuthManager(LocalContext.current)
+    val context = LocalContext.current
+    //FIREBASE
+    val auth = AuthManager()
     val user = auth.getCurrentUser()
-    //--------
+    val realtime = RealtimeManager()
 
     //MAPAS
     val detailsViewModel = hiltViewModel<DetailsViewModel>()
     val detailsState = detailsViewModel.detailsState.collectAsState().value
-
-    val backDropImageState = rememberAsyncImagePainter(
-        model = ImageRequest.Builder(LocalContext.current)
-            .data(MovieApi.IMAGE_BASE_URL + detailsState.movie?.backdrop_path)
-            .size(Size.ORIGINAL)
-            .build()
-    ).state
 
     val posterImageState = rememberAsyncImagePainter(
         model = ImageRequest.Builder(LocalContext.current)
@@ -83,6 +84,17 @@ fun DetailsScreen(fromPopular: Boolean) {
             .size(Size.ORIGINAL)
             .build()
     ).state
+    val backDropImageState = rememberAsyncImagePainter(
+        model = ImageRequest.Builder(LocalContext.current)
+            .data(MovieApi.IMAGE_BASE_URL + detailsState.movie?.backdrop_path)
+            .size(Size.ORIGINAL)
+            .build()
+    ).state
+
+    //COMENTARIOS
+    val commentViewModel = hiltViewModel<CommentViewModel>()
+    val commentState = commentViewModel.state.collectAsState().value
+    var commentText by rememberSaveable { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -208,13 +220,30 @@ fun DetailsScreen(fromPopular: Boolean) {
                         text = movie.vote_count.toString() + stringResource(R.string.votes)
                     )
                     Spacer(modifier = Modifier.height(10.dp))
+                    var isFavorited by rememberSaveable { mutableStateOf(false) }
                     Icon(
-                        imageVector = Icons.Rounded.FavoriteBorder,
+                        imageVector = if (isFavorited) Icons.Rounded.Favorite else Icons.Rounded.FavoriteBorder,
                         contentDescription = "Fav Icon",
                         modifier = Modifier
                             .padding(start = 16.dp)
                             .clickable {
-                                /* TODO AQUI HAY QUE HACER LA FUNCION */
+                                user?.let {
+                                    isFavorited = !isFavorited
+                                    val text: String = if (isFavorited) {
+                                        "Se ha añadido ${movie.title} a favoritos"
+                                    } else {
+                                        "Se ha borrado ${movie.title} de favoritos"
+                                    }
+                                    realtime.addFavorita(
+                                        Favorita(
+                                            uid = user.uid,
+                                            peliId = movie.id.toString()
+                                        )
+                                    )
+                                    Toast
+                                        .makeText(context, text, Toast.LENGTH_SHORT)
+                                        .show()
+                                }
                             }
                     )
                 }
@@ -241,14 +270,41 @@ fun DetailsScreen(fromPopular: Boolean) {
         }
         Spacer(modifier = Modifier.height(32.dp))
 
-        // Mostrar comentarios
-        comentarios.forEach { comentario ->
-            val cadena = "${user?.email} ha dicho: $comentario"
-            Text(text = cadena)
-            Spacer(modifier = Modifier.height(4.dp))
+        if (commentState.comments.isNotEmpty()) {
+            val movieIdToMatch = detailsState.movie?.id ?: -1
+            val filteredComments = commentState.comments.filter {
+                Log.e(
+                    "Comentarios",
+                    "idPeliculaDetails: $movieIdToMatch || idPeliComentario: ${it.movieId}"
+                )
+                it.movieId == movieIdToMatch
+            }
+            if (filteredComments.isNotEmpty()) {
+                Box(modifier = Modifier.padding(10.dp)) {
+                    filteredComments.forEach {
+                        val cadena = "${it.user} comentó: ${it.content}"
+                        Text(text = cadena)
+                        Spacer(modifier = Modifier.height(4.dp))
+                    }
+                }
+            } else {
+                Text(text = "Sé el primero en comentar esta película")
+                Spacer(
+                    modifier = Modifier
+                        .height(6.dp)
+                        .padding(10.dp)
+                )
+            }
+        } else {
+            Text(text = "Sé el primero en comentar esta película")
+            Spacer(
+                modifier = Modifier
+                    .height(6.dp)
+                    .padding(10.dp)
+            )
         }
 
-        if(!fromPopular){
+        if (!fromPopular) {
             Text(
                 modifier = Modifier.padding(10.dp),
                 text = "Cines cercanos donde ver: \n${detailsState.movie?.title}",
@@ -259,12 +315,13 @@ fun DetailsScreen(fromPopular: Boolean) {
                 modifier = Modifier
                     .height(450.dp)
                     .padding(10.dp)
-            ){
+            ) {
                 Map()
             }
         } else {
             Card(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
                     .padding(10.dp),
             ) {
                 Column(
@@ -278,11 +335,11 @@ fun DetailsScreen(fromPopular: Boolean) {
                             fontWeight = FontWeight.Bold
                         )
                     )
-
+                    Spacer(modifier = Modifier.height(8.dp))
                     TextField(
-                        value = cmn,
+                        value = commentText,
                         onValueChange = {
-                            cmn = it
+                            commentText = it
                         },
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -290,13 +347,43 @@ fun DetailsScreen(fromPopular: Boolean) {
                     //Agregamos el boton
                     Button(
                         onClick = {
-                            if (cmn.isNotBlank()) {
-                                comentarios = listOf(cmn) + comentarios
-                                cmn = ""
+                            user?.let {
+                                detailsState.movie?.let {
+                                    if (commentText.isNotBlank()) {
+                                        Log.e(
+                                            "Comentarios",
+                                            "Usuario: ${user.email}, MovieId: ${it.id} , Comentario: $commentText"
+                                        )
+                                        commentState.user = mutableStateOf(user.email.toString())
+                                        commentState.movieId = mutableIntStateOf(it.id)
+                                        commentState.content = mutableStateOf(commentText)
+                                        commentViewModel.onEvent(
+                                            CommentsEvents.SaveComment(
+                                                user = commentState.user.value,
+                                                movieId = commentState.movieId.value,
+                                                content = commentState.content.value
+                                            )
+                                        )
+                                        commentText = ""
+                                    } else {
+                                        Toast.makeText(
+                                            context,
+                                            "No has escrito nada",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                }
                             }
                         },
                         modifier = Modifier.align(Alignment.End)
                     ) {
+                        Icon(
+                            imageVector = Icons.Rounded.AddComment,
+                            contentDescription = "Comentar",
+                            modifier = Modifier
+                                .height(20.dp)
+                                .padding(end = 4.dp)
+                        )
                         Text(text = "Publicar")
                     }
                     Spacer(modifier = Modifier.height(16.dp))

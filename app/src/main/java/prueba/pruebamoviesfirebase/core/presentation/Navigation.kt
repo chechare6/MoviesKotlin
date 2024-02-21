@@ -33,7 +33,7 @@ fun Navigation(
             color = MaterialTheme.colorScheme.background
         ) {
             val analytics = AnalyticsManager(context)
-            val authManager = AuthManager(context)
+            val authManager = AuthManager()
             val user: FirebaseUser? = authManager.getCurrentUser()
 
             NavHost(
@@ -63,7 +63,7 @@ fun Navigation(
                     )
                 }
                 composable(Screen.Home.route) {
-                    HomeScreen(navController = navController)
+                    HomeScreen(navController = navController, context)
                 }
                 composable(
                         Screen.Details.route + "/{movieId}?fromPopular={fromPopular}",

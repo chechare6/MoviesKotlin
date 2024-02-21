@@ -1,5 +1,6 @@
 package prueba.pruebamoviesfirebase.core.presentation
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -42,7 +43,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -54,6 +54,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import prueba.pruebamoviesfirebase.R
+import prueba.pruebamoviesfirebase.favorites.RealtimeManager
 import prueba.pruebamoviesfirebase.login.utils.AuthManager
 import prueba.pruebamoviesfirebase.movieList.presentation.FavoritesMoviesScreen
 import prueba.pruebamoviesfirebase.movieList.presentation.MovieListUiEvent
@@ -66,9 +67,10 @@ import prueba.pruebamoviesfirebase.movieList.util.Screen
 @Composable
 fun HomeScreen(
     navController: NavHostController = rememberNavController(),
-    auth: AuthManager = AuthManager(LocalContext.current),
+    context: Context,
+    auth: AuthManager = AuthManager()
 ) {
-
+    val realtime = RealtimeManager()
     val movieListViewModel = hiltViewModel<MovieListViewModel>()
     val movieListState = movieListViewModel.movieListState.collectAsState().value
     val bottomNavController = rememberNavController()
@@ -175,7 +177,9 @@ fun HomeScreen(
                     FavoritesMoviesScreen(
                         navController = navController,
                         movieListState = movieListState,
-                        onEvent = movieListViewModel::onEvent
+                        onEvent = movieListViewModel::onEvent,
+                        realtime = realtime,
+                        authManager = auth
                     )
                 }
                 composable(Screen.NowPlayingMovieList.route) {

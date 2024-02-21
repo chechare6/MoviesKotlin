@@ -16,7 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DetailsViewModel @Inject constructor(
     private val movieListRepository: MovieListRepository,
-    private val savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val movieId = savedStateHandle.get<Int>("movieId")
@@ -55,8 +55,6 @@ class DetailsViewModel @Inject constructor(
                             }
                         }
                     }
-
-                    else -> {}
                 }
             }
         }

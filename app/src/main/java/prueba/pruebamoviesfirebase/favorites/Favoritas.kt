@@ -1,6 +1,6 @@
-package prueba.pruebamoviesfirebase.modelFireBaseBBDD
+package prueba.pruebamoviesfirebase.favorites
 
-data class Favoritas (
+data class Favorita (
     val key: String? = null,
     val uid: String = "",
     val peliId: String = ""

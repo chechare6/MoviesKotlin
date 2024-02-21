@@ -17,13 +17,4 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-    /*
-    @Composable
-    private fun SetBarColor(color: Color) {
-        val systemUiController = rememberSystemUiController()
-        LaunchedEffect(key1 = color) {
-            systemUiController.setSystemBarsColor(color)
-        }
-    }
-    */
 }

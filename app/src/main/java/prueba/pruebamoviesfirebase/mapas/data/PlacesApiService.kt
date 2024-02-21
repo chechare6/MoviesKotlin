@@ -28,7 +28,7 @@ object PlacesClient {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
-        Log.e("CINE", "url: ${retrofit.baseUrl().toString()}")
+        Log.e("CINE", "url: ${retrofit.baseUrl()}")
         return retrofit.create(PlacesApi::class.java)
     }
 }

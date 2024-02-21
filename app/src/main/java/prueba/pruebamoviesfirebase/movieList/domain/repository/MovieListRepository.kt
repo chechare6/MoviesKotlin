@@ -16,13 +16,4 @@ interface MovieListRepository {
 
     //Pedimos una película en concreto
     suspend fun getMovie(id: Int): Flow<Resource<Movie>>
-
-    /* FAVORITO
-    suspend fun isFavoriteMovie(movieId: Int): Boolean
-
-    // FAVORITO
-    suspend fun addToFavorite(movie: Movie)
-
-    // FAVORITO
-    suspend fun removeFromFavorite(movieId: Int) */
 }

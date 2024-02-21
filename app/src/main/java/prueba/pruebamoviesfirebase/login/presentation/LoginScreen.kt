@@ -40,6 +40,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -112,6 +113,7 @@ fun LoginScreen(
         TextField(
             label = { Text(text = "Contraseña") },
             value = password,
+            visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             onValueChange = { password = it }
         )
@@ -157,7 +159,7 @@ fun LoginScreen(
         SocialMediaButton(
             onClick = {
                 scope.launch {
-                    incognitoSignIn(auth, analytics, context, navController)
+                    incognitoSignIn(auth, analytics, navController)
                 }
             },
             text = "Continuar como invitado",
@@ -181,7 +183,6 @@ fun LoginScreen(
 private suspend fun incognitoSignIn(
     auth: AuthManager,
     analytics: AnalyticsManager,
-    context: Context,
     navController: NavHostController
 ) {
     when(val result = auth.signInAnonymously()) {

@@ -2,13 +2,15 @@ package prueba.pruebamoviesfirebase.di
 
 import android.app.Application
 import androidx.room.Room
-import prueba.pruebamoviesfirebase.movieList.data.local.movie.MovieDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import prueba.pruebamoviesfirebase.details.presentation.comments.dao.CommentDao
+import prueba.pruebamoviesfirebase.details.presentation.comments.dao.CommentDatabase
+import prueba.pruebamoviesfirebase.movieList.data.local.movie.MovieDatabase
 import prueba.pruebamoviesfirebase.movieList.data.remote.MovieApi
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -44,6 +46,22 @@ object AppModule {
             app,
             MovieDatabase::class.java,
             "moviedb.db"
+        ).build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideCommentDao(database: CommentDatabase): CommentDao {
+        return database.dao
+    }
+
+    @Provides
+    @Singleton
+    fun providesCommentDatabase(app: Application): CommentDatabase {
+        return Room.databaseBuilder(
+            app,
+            CommentDatabase::class.java,
+            "comments.db"
         ).build()
     }
 
