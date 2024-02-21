@@ -12,6 +12,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 abstract class RepositoryModule {
 
+    // Método abstracto que vincula la implementación de MovieListRepository a su interfaz.
     @Binds
     @Singleton
     abstract fun bindMovieListRepository(

@@ -6,51 +6,32 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.auth
 import kotlinx.coroutines.tasks.await
 
-//ASÍ ES LA ESTRUCTURA DE MOVIESDB
-/*
-sealed class AuthManager <T> (
-    val data: T? = null,
-    val message: String? = null
-) {
-    class Success<T>(data: T?) : AuthManager<T>(data)
-    class Error<T>(message: String, data: T? = null) : AuthManager<T>(data, message)
-}
-*/
-//ASI ES LA DE FIREBASE
-
+// Sealed class que representa el resultado de las operaciones de autenticación.
 sealed class AuthRes<out T> {
+    // Representa el resultado exitoso con datos de tipo T.
     data class Success<T>(val data: T): AuthRes<T>()
+    // Representa un resultado de error con un mensaje de error.
     data class Error(val errorMessage: String): AuthRes<Nothing>()
 }
-/*
-Es lo mismo de maneras distintas, igual podríamos adaptar la clase
-para utilizar 'Resources' y ahorrarnos esta clase??
- */
 
+// Clase que gestiona la autenticación de Firebase.
 class AuthManager {
+    // Instancia de FirebaseAuth inicializada de forma lazy.
     private val auth: FirebaseAuth by lazy { Firebase.auth }
 
+    // Método para iniciar sesión de forma anónima y suspendido.
     suspend fun signInAnonymously(): AuthRes<FirebaseUser> {
         return try {
             val result = auth.signInAnonymously().await()
+            // Retorna un resultado exitoso con el usuario anonimo de Firebase.
             AuthRes.Success(result.user ?: throw Exception("Error al iniciar sesión"))
         } catch (e: Exception) {
+            // Retorna un resultado de error con el mensaje de error.
             AuthRes.Error(e.message ?: "Error al iniciar sesión")
         }
     }
 
-    /* EJEMPLO DE COMO SE USARIA CON RESOURCE
-    NO SE SI FUNCIONA, HABRÍA QUE PROBAR **DESPUÉS** DE QUE EJECUTE Y FUNCIONE LA APP
-    suspend fun signInWithEmailAndPassword(email: String, password: String): Resource<FirebaseUser?> {
-        return try {
-            val authResult = auth.signInWithEmailAndPassword(email, password).await()
-            Resource.Success(authResult.user)
-        } catch (e: Exception) {
-            Resource.Error(e.message ?: "Error al iniciar sesión")
-        }
-    }
-    */
-    //AQUI LA VERSION NORMAL
+    // Método para iniciar sesión con correo electrónico y contraseña.
     suspend fun signInWithEmailAndPassword(email: String, password: String): AuthRes<FirebaseUser?> {
         return try {
             val authResult = auth.signInWithEmailAndPassword(email, password).await()
@@ -60,6 +41,7 @@ class AuthManager {
         }
     }
 
+    // Método para crear un usuario con correo electrónico y contraseña.
     suspend fun createUserWithEmailAndPassword(email: String, password: String): AuthRes<FirebaseUser?> {
         return try{
             val authResult = auth.createUserWithEmailAndPassword(email, password).await()
@@ -69,6 +51,7 @@ class AuthManager {
         }
     }
 
+    // Método para restablecer la contraseña por correo electrónico.
     suspend fun resetPassword(email: String): AuthRes<Unit> {
         return try {
             auth.sendPasswordResetEmail(email).await()
@@ -78,10 +61,12 @@ class AuthManager {
         }
     }
 
+    // Método para cerrar sesión.
     fun signOut() {
         auth.signOut()
     }
 
+    // Método para obtener el usuario actualmente autenticado.
     fun getCurrentUser(): FirebaseUser? {
         return auth.currentUser
     }

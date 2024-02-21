@@ -10,8 +10,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import prueba.pruebamoviesfirebase.login.utils.AuthManager
 
-
+/**
+ * Clase que obtendra la referencia a la BBDD de Firebase
+ * y ejecutara sus funciones.
+ */
 class RealtimeManager {
+    // Referencia a la BBDD de firebase.
     private val databaseReference: DatabaseReference = FirebaseDatabase.getInstance("https://movieskotlin-b4fae-default-rtdb.europe-west1.firebasedatabase.app").reference.child("favoritas")
     private val authManager = AuthManager()
 

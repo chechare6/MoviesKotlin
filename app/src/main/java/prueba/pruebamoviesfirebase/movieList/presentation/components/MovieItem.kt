@@ -46,12 +46,14 @@ import prueba.pruebamoviesfirebase.movieList.util.RatingBar
 import prueba.pruebamoviesfirebase.movieList.util.Screen
 import prueba.pruebamoviesfirebase.movieList.util.getAverageColor
 
+// Composable que muestra un elemento de película en una cuadrícula de películas.
 @Composable
 fun MovieItem(
     movie: Movie,
     popular: Boolean,
     navHostController: NavHostController
 ) {
+    // Estado para manejar el estado de la carga de la imagen de la película.
     val imageState = rememberAsyncImagePainter(
         model = ImageRequest.Builder(LocalContext.current)
             .data(MovieApi.IMAGE_BASE_URL + movie.backdrop_path)
@@ -59,11 +61,14 @@ fun MovieItem(
             .build()
     ).state
 
+    // Color dominante inicial para el gradiente de fondo.
     val defaultColor = MaterialTheme.colorScheme.secondaryContainer
+    // Estado para almacenar el color dominante del fondo.
     var dominantColor by remember {
         mutableStateOf(defaultColor)
     }
 
+    // Columna que contiene la vista del elemento de película.
     Column(
         modifier = Modifier
             .wrapContentHeight()
@@ -79,9 +84,11 @@ fun MovieItem(
                 )
             )
             .clickable {
+                // Navega a la pantalla de detalles de la película cuando se hace clic en el elemento.
                 navHostController.navigate(Screen.Details.route + "/${movie.id}?fromPopular=" + popular)
             }
     ) {
+        // Verifica si hubo un error al cargar la imagen de la película.
         if (imageState is AsyncImagePainter.State.Error) {
             Box(
                 modifier = Modifier
@@ -92,6 +99,7 @@ fun MovieItem(
                     .background(MaterialTheme.colorScheme.primaryContainer),
                 contentAlignment = Alignment.Center
             ) {
+                // Muestra un ícono de imagen no compatible en caso de error de carga de imagen.
                 Icon(
                     modifier = Modifier.size(70.dp),
                     imageVector = Icons.Rounded.ImageNotSupported,
@@ -100,11 +108,14 @@ fun MovieItem(
             }
         }
 
+        // Verifica si la carga de la imagen de la película fue exitosa.
         if (imageState is AsyncImagePainter.State.Success) {
+            // Calcula y actualiza el color dominante del gradiente de fondo.
             dominantColor = getAverageColor(
                 imageBitmap = imageState.result.drawable.toBitmap().asImageBitmap()
             )
 
+            // Muestra la imagen de la película con el contenido de la imagen escalado recortado
             Image(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -119,6 +130,7 @@ fun MovieItem(
 
         Spacer(modifier = Modifier.height(6.dp))
 
+        // Muestra el título de la película.
         Text(
             modifier = Modifier.padding(start = 16.dp, end = 8.dp),
             text = movie.title,
@@ -127,6 +139,7 @@ fun MovieItem(
             maxLines = 1
         )
 
+        // Muestra la calificación de la película y el ícono de la estrella.
         Row(
             modifier = Modifier
                 .fillMaxWidth()

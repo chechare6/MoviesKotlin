@@ -68,22 +68,35 @@ import prueba.pruebamoviesfirebase.movieList.util.RatingBar
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailsScreen(fromPopular: Boolean) {
+    // Obtiene el contexto actual.
     val context = LocalContext.current
+
+
     //FIREBASE
+    // Instancia de AuthManager para manejar la autenticación.
     val auth = AuthManager()
+
+    // Obtiene el usuario actual.
     val user = auth.getCurrentUser()
+
+    // Instancia de RealtimeManager para manejar datos en tiempo real.
     val realtime = RealtimeManager()
 
     //MAPAS
+    // Obtiene el ViewModel de detalles utilizando Hilt.
     val detailsViewModel = hiltViewModel<DetailsViewModel>()
+    // Recolecta el estado de los detalles.
     val detailsState = detailsViewModel.detailsState.collectAsState().value
 
+    // Obtiene el estado de la imagen del póster de manera asíncrona.
     val posterImageState = rememberAsyncImagePainter(
         model = ImageRequest.Builder(LocalContext.current)
             .data(MovieApi.IMAGE_BASE_URL + detailsState.movie?.poster_path)
             .size(Size.ORIGINAL)
             .build()
     ).state
+
+    // Obtiene el estado de la imagen de fondo de manera asíncrona.
     val backDropImageState = rememberAsyncImagePainter(
         model = ImageRequest.Builder(LocalContext.current)
             .data(MovieApi.IMAGE_BASE_URL + detailsState.movie?.backdrop_path)
@@ -93,7 +106,9 @@ fun DetailsScreen(fromPopular: Boolean) {
 
     //COMENTARIOS
     val commentViewModel = hiltViewModel<CommentViewModel>()
+    // Recolecta el estado de los comentarios
     val commentState = commentViewModel.state.collectAsState().value
+    // Almacena el texto del comentario
     var commentText by rememberSaveable { mutableStateOf("") }
 
     Column(
@@ -168,7 +183,9 @@ fun DetailsScreen(fromPopular: Boolean) {
                 }
             }
 
+            // Detalles de la película
             detailsState.movie?.let { movie ->
+                // Muestra detalles como título, calificación, etc.
                 Column(
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -270,6 +287,7 @@ fun DetailsScreen(fromPopular: Boolean) {
         }
         Spacer(modifier = Modifier.height(32.dp))
 
+        // Comentarios de esa pelicula
         if (commentState.comments.isNotEmpty()) {
             val movieIdToMatch = detailsState.movie?.id ?: -1
             val filteredComments = commentState.comments.filter {
@@ -304,6 +322,7 @@ fun DetailsScreen(fromPopular: Boolean) {
             )
         }
 
+        // Si esa pelicula no es popular mostrara el mapa de caso contrario los comentarios
         if (!fromPopular) {
             Text(
                 modifier = Modifier.padding(10.dp),
@@ -316,6 +335,7 @@ fun DetailsScreen(fromPopular: Boolean) {
                     .height(450.dp)
                     .padding(10.dp)
             ) {
+                //Carga el mapa
                 Map()
             }
         } else {

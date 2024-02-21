@@ -13,6 +13,11 @@ import prueba.pruebamoviesfirebase.movieList.util.Category
 import prueba.pruebamoviesfirebase.movieList.util.Resource
 import javax.inject.Inject
 
+/**
+ * ViewModel para gestionar el estado y la lógica relacionada con la lista de películas.
+ *
+ * @param movieListRepository Repositorio para acceder a los datos de la lista de películas.
+ */
 @HiltViewModel
 class MovieListViewModel @Inject constructor(
     private val movieListRepository: MovieListRepository,
@@ -20,15 +25,22 @@ class MovieListViewModel @Inject constructor(
     private val movieDao: MovieDao */
 ) : ViewModel() {
 
-    //view model y parametros que utilizamos
+    // Estado mutable de la lista de películas
     private var _movieListState = MutableStateFlow(MovieListState())
+    // Estado inmutable de la lista de películas expuesto a la interfaz de usuario
     val movieListState = _movieListState.asStateFlow()
 
+    // Inicialización, se obtienen las listas de películas populares y en reproducción actual
     init {
         getPopularMovieList(false)
         getnowPlayingMovieList(false)
     }
 
+    /**
+     * Método para manejar eventos relacionados con la lista de películas.
+     *
+     * @param event El evento que se está manejando.
+     */
     fun onEvent(event: MovieListUiEvent) {
         when (event) {
             is MovieListUiEvent.Paginate -> {
@@ -47,7 +59,11 @@ class MovieListViewModel @Inject constructor(
         }
     }
 
-    //GET de las peliculas populares - comprueba si tenemos que coger la info de la API o podemos desde la BBDD interna (room)
+    /**
+     * Método para obtener la lista de películas populares.
+     *
+     * @param forceFetchFromRemote Indica si se debe forzar la obtención de datos de forma remota.
+     */
     private fun getPopularMovieList(forceFetchFromRemote: Boolean) {
         viewModelScope.launch {
             _movieListState.update {
@@ -88,7 +104,11 @@ class MovieListViewModel @Inject constructor(
         }
     }
 
-    //GET de las próximas peliculas  - comprueba si tenemos que coger la info de la API o podemos desde la BBDD interna (room)
+    /**
+     * Método para obtener la lista de películas en reproducción actual.
+     *
+     * @param forceFetchFromRemote Indica si se debe forzar la obtención de datos de forma remota.
+     */
     private fun getnowPlayingMovieList(forceFetchFromRemote: Boolean) {
         viewModelScope.launch {
             _movieListState.update {
@@ -130,6 +150,7 @@ class MovieListViewModel @Inject constructor(
     }
 
     /* FAVORITO
+    // Métodos para agregar y quitar películas de favoritos
     fun addToFavorite(movie: MovieEntity) {
         viewModelScope.launch {
             movieDao.insertFavoriteMovie(movie)

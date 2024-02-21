@@ -14,8 +14,15 @@ import androidx.navigation.NavHostController
 import prueba.pruebamoviesfirebase.favorites.RealtimeManager
 import prueba.pruebamoviesfirebase.login.utils.AuthManager
 
-//SCREEN DE LA PANTALLA DE FAVORITOS
-
+/**
+ * Composable que muestra la pantalla de películas favoritas.
+ *
+ * @param movieListState El estado de la lista de películas.
+ * @param navController Controlador de navegación para la navegación entre pantallas.
+ * @param onEvent Función lambda para manejar eventos relacionados con la lista de películas.
+ * @param realtime Instancia de [RealtimeManager] para manejar datos en tiempo real.
+ * @param authManager Instancia de [AuthManager] para manejar la autenticación de usuarios.
+ */
 @Composable
 fun FavoritesMoviesScreen(
     movieListState: MovieListState,
@@ -24,10 +31,13 @@ fun FavoritesMoviesScreen(
     realtime: RealtimeManager,
     authManager: AuthManager
 ) {
+    // Obtiene la lista de películas marcadas como favoritas desde el flujo de datos en tiempo real
     val favoritas by realtime.getFavoritasFlow().collectAsState(emptyList())
 
+    // Verifica si la lista de películas favoritas no está vacía
     if(!favoritas.isNullOrEmpty()){
-        /* //GRID DONDE DEBERÍAN APARECER LAS PELÍCULAS MARCADAS COMO FAVORITAS
+        //TODO: GRID DONDE DEBERÍAN APARECER LAS PELÍCULAS MARCADAS COMO FAVORITAS
+        /*
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             modifier = Modifier.fillMaxSize(),
@@ -46,6 +56,7 @@ fun FavoritesMoviesScreen(
         }
         */
     } else {
+        // Muestra un mensaje indicando que no se han encontrado películas favoritas
         Box(
             modifier = Modifier.fillMaxSize()
                 .padding(20.dp),

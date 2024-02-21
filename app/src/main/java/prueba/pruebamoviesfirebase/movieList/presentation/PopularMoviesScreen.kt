@@ -16,13 +16,20 @@ import androidx.navigation.NavHostController
 import prueba.pruebamoviesfirebase.movieList.presentation.components.MovieItem
 import prueba.pruebamoviesfirebase.movieList.util.Category
 
-//SCREEN DE LA PANTALLA DE 'POPULARES'
+/**
+ * Composable para la pantalla de películas populares.
+ *
+ * @param movieListState Estado de la lista de películas.
+ * @param navController Controlador de navegación para la navegación entre pantallas.
+ * @param onEvent Función de devolución de llamada para manejar eventos relacionados con la lista de películas.
+ */
 @Composable
 fun PopularMoviesScreen(
     movieListState: MovieListState,
     navController: NavHostController,
     onEvent: (MovieListUiEvent) -> Unit
 ) {
+    // Si la lista de películas populares está vacía, muestra un indicador de progreso.
     if (movieListState.popularMovieList.isEmpty()) {
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -31,6 +38,7 @@ fun PopularMoviesScreen(
             CircularProgressIndicator()
         }
     } else {
+        // Si hay películas en la lista, muestra un LazyVerticalGrid con las películas.
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             modifier = Modifier.fillMaxSize(),
@@ -44,6 +52,7 @@ fun PopularMoviesScreen(
                 )
                 Spacer(modifier = Modifier.height(16.dp))
 
+                // Si se alcanza el final de la lista y no se están cargando más datos, se solicita paginación.
                 if (index >= movieListState.popularMovieList.size - 1 && !movieListState.isLoading) {
                     onEvent(MovieListUiEvent.Paginate(Category.POPULAR))
                 }

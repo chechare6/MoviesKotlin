@@ -63,19 +63,40 @@ import prueba.pruebamoviesfirebase.movieList.presentation.PopularMoviesScreen
 import prueba.pruebamoviesfirebase.movieList.presentation.now_playingMoviesScreen
 import prueba.pruebamoviesfirebase.movieList.util.Screen
 
+/**
+ * Composable que representa la pantalla principal de la aplicación.
+ *
+ * @param analytics Administrador de análisis para rastreo de eventos.
+ * @param auth Administrador de autenticación para gestionar la información del usuario.
+ * @param navigation Controlador de navegación para gestionar la navegación entre pantallas.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
+    // Controlador de navegación para la pantalla principal.
     navController: NavHostController = rememberNavController(),
     context: Context,
     auth: AuthManager = AuthManager()
 ) {
+    // Controlador del Realtime Database de Firebase.
     val realtime = RealtimeManager()
+
+    // Obtiene una instancia de MovieListViewModel utilizando Hilt.
     val movieListViewModel = hiltViewModel<MovieListViewModel>()
+
+    // Recolecta el estado del listado de películas desde el ViewModel.
     val movieListState = movieListViewModel.movieListState.collectAsState().value
+
+    // Crea un NavController para la navegación entre composables.
     val bottomNavController = rememberNavController()
+
+    // Estado para mostrar o no el diálogo de confirmación de cierre de sesión.
     var showDialog by remember { mutableStateOf(false) }
+
+    // Obtiene la información del usuario actual.
     val user = auth.getCurrentUser()
+
+    // Función para llevar a cabo el cierre de sesión.
     val onLogoutConfirmed: () -> Unit = {
         auth.signOut()
         navController.navigate(Screen.LogIn.route) {
@@ -85,21 +106,25 @@ fun HomeScreen(
         }
     }
 
+    // Diseño de la pantalla principal utilizando el Scaffold de Material Design.
     Scaffold(bottomBar = {
         BottomNavigationBar(
             bottomNavController = bottomNavController, onEvent = movieListViewModel::onEvent
         )
     }, topBar = {
-        //---------------
+        // Barra superior que incluye el título y el botón de cierre de sesión.
         TopAppBar(
             title = {
+                // Contenido personalizado con la foto de perfil y la información del usuario.
                 Row(
                     horizontalArrangement = Arrangement.Start,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    // Si hay una foto de perfil, mostrarla.
                     if (user?.photoUrl != null){
                         //TODO: Mostrar la foto de perfil si hacemos el login con Google
                     }else{
+                        // Mostrar una foto de perfil predeterminada.
                         Image(
                             painter = painterResource(R.drawable.profile),
                             contentDescription = "Foto de perfil por defecto",
@@ -111,6 +136,7 @@ fun HomeScreen(
                     }
                     Spacer(modifier = Modifier.width(10.dp))
 
+                    // Información del usuario (nombre y correo electrónico).
                     Column {
                         Text(
                             text = if(!user?.displayName.isNullOrEmpty()) "Hola ${user?.displayName}" else "Bienvenidx",
@@ -133,6 +159,7 @@ fun HomeScreen(
                 MaterialTheme.colorScheme.inverseOnSurface
             ),
             actions = {
+                // Botón de cierre de sesión.
                 IconButton(
                     onClick = {
                         showDialog = true
@@ -146,8 +173,9 @@ fun HomeScreen(
             }
 
         )
-        //-----------
+
     }) {
+        // Contenido principal de la pantalla.
         Box(modifier = Modifier.padding(it)) {
             // Muestra el diálogo de confirmación de cierre de sesión si showDialog es true.
             if (showDialog) {
@@ -157,6 +185,8 @@ fun HomeScreen(
                 }, onDismiss = { showDialog = false })
             }
         }
+
+        // Navegacion de la barra inferior.
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -166,6 +196,7 @@ fun HomeScreen(
                 navController = bottomNavController,
                 startDestination = Screen.PopularMovieList.route
             ) {
+                // Pantalla de películas populares.
                 composable(Screen.PopularMovieList.route) {
                     PopularMoviesScreen(
                         navController = navController,
@@ -173,6 +204,7 @@ fun HomeScreen(
                         onEvent = movieListViewModel::onEvent
                     )
                 }
+                // Pantalla de películas favoritas.
                 composable(Screen.FavoritesMovieList.route) {
                     FavoritesMoviesScreen(
                         navController = navController,
@@ -182,6 +214,7 @@ fun HomeScreen(
                         authManager = auth
                     )
                 }
+                // Pantalla de películas en cartelera.
                 composable(Screen.NowPlayingMovieList.route) {
                     now_playingMoviesScreen(
                         navController = navController,
@@ -195,12 +228,12 @@ fun HomeScreen(
 
 }
 
-
+// Barra inferior.
 @Composable
 fun BottomNavigationBar(
     bottomNavController: NavHostController, onEvent: (MovieListUiEvent) -> Unit
 ) {
-
+    // Iconos y texto de los botones de la barra inferior.
     val items = listOf(
         BottomItem(
             title = stringResource(R.string.popular),
@@ -214,6 +247,7 @@ fun BottomNavigationBar(
         )
     )
 
+    // Valor seleccionado
     val selected = rememberSaveable {
         mutableIntStateOf(0)
     }
@@ -222,6 +256,7 @@ fun BottomNavigationBar(
         Row(
             modifier = Modifier.run { background(MaterialTheme.colorScheme.inverseOnSurface) }
         ) {
+            // Vemos en que ha clicado y lo redirigimos.
             items.forEachIndexed { index, bottomItem ->
                 NavigationBarItem(selected = selected.intValue == index, onClick = {
                     selected.intValue = index
@@ -261,10 +296,12 @@ fun BottomNavigationBar(
 
 }
 
+// Clase para BottomItem
 data class BottomItem(
     val title: String, val icon: ImageVector
 )
 
+// Diálogo que se genera para confirmar el cierre de sesion
 @Composable
 fun LogoutDialog(onConfirmLogout: () -> Unit, onDismiss: () -> Unit) {
     AlertDialog(

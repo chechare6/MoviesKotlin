@@ -43,7 +43,13 @@ import prueba.pruebamoviesfirebase.login.utils.AuthRes
 import prueba.pruebamoviesfirebase.movieList.util.Screen
 import prueba.pruebamoviesfirebase.ui.theme.Purple40
 
-
+/**
+ * Composable que representa la pantalla de registro en la aplicación.
+ *
+ * @param analytics Administrador de análisis para rastreo de eventos.
+ * @param auth Administrador de autenticación para gestionar la información del usuario.
+ * @param navigation Controlador de navegación para gestionar la navegación entre pantallas.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignUpScreen (
@@ -51,22 +57,33 @@ fun SignUpScreen (
     auth: AuthManager,
     navController: NavHostController
 ) {
+    // Registra la vista de pantalla en los análisis.
     analytics.LogScreenView(screenName = Screen.SignUp.route)
+
+    // Obtiene el contexto actual.
     val context = LocalContext.current
+
+    // Estados para almacenar el correo electrónico y la contraseña introducidos por el usuario.
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+
+    // Ámbito de la coroutine para lanzar operaciones asíncronas.
     val scope = rememberCoroutineScope()
 
+    // Establecemos el diseño de la pantalla
     Column(
         modifier= Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Título de la pantalla.
         Text(
             text = "Crear cuenta",
             style = TextStyle(fontSize = 40.sp, color = Purple40)
         )
         Spacer(modifier = Modifier.height(50.dp))
+
+        // Campos de entrada para correo electrónico y contraseña.
         TextField(
             label = { Text(text = "Correo electrónico") },
             value = email,
@@ -82,6 +99,8 @@ fun SignUpScreen (
             onValueChange = { password = it }
         )
         Spacer(modifier = Modifier.height(30.dp))
+
+        // Botón para realizar el registro.
         Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
             Button(
                 onClick = {
@@ -98,6 +117,8 @@ fun SignUpScreen (
             }
         }
         Spacer(modifier = Modifier.height(40.dp))
+
+        // Enlace para redirigir a la pantalla de inicio de sesión.
         ClickableText(
             text = AnnotatedString("¿Ya tienes cuenta? Inicia sesión"),
             onClick = {
@@ -113,15 +134,23 @@ fun SignUpScreen (
     }
 }
 
+/**
+ * Función para manejar el registro con correo electrónico y contraseña.
+ */
 private suspend fun signUp(email: String, password: String, auth: AuthManager, analytics: AnalyticsManager, context: Context, navController: NavHostController) {
     if(email.isNotEmpty() && password.isNotEmpty()) {
+        // Realiza la operación de registro y gestiona el resultado.
         when(val result = auth.createUserWithEmailAndPassword(email, password)) {
             is AuthRes.Success -> {
+                // Registra el evento de registro exitoso y muestra un mensaje.
                 analytics.logButtonClicked(FirebaseAnalytics.Event.SIGN_UP)
                 Toast.makeText(context, "Registro exitoso", Toast.LENGTH_SHORT).show()
+
+                // Regresa a la pantalla de inicio de sesión.
                 navController.popBackStack()
             }
             is AuthRes.Error -> {
+                // Registra el evento de error y muestra un mensaje de error.
                 analytics.logButtonClicked("Error SignUp: ${result.errorMessage}")
                 Toast.makeText(context, "Error SignUp: ${result.errorMessage}", Toast.LENGTH_SHORT).show()
             }

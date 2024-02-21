@@ -1,10 +1,14 @@
 package prueba.pruebamoviesfirebase.movieList.util
 
+/**
+ * sealed class que representa las diferentes rutas de navegación
+ * en la aplicación
+ * @property route Nombre de la ruta de la navegación
+ */
 sealed class Screen(val route: String) {
-    //Lista de pantallas que tendremos, aqui debemos "declarar" las pantallas que vamos a utilizar/hacer
     object Home : Screen("home")
     object PopularMovieList : Screen("popularMovie")
-    object NowPlayingMovieList : Screen("nowPlayingMovie") //Esta sería la que modificamos según nuestro proyecto?
+    object NowPlayingMovieList : Screen("nowPlayingMovie")
     object FavoritesMovieList : Screen("favoritesMovies")
     object Details : Screen("details")
     object LogIn : Screen("logIn")

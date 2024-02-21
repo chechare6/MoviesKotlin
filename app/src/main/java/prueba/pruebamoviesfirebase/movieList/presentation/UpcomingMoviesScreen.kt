@@ -16,14 +16,20 @@ import androidx.navigation.NavHostController
 import prueba.pruebamoviesfirebase.movieList.presentation.components.MovieItem
 import prueba.pruebamoviesfirebase.movieList.util.Category
 
-/* CAMBIAR A NOW PLAYING */
+/**
+ * Composable para la pantalla de películas que están actualmente en cartelera.
+ *
+ * @param movieListState Estado de la lista de películas.
+ * @param navController Controlador de navegación para la navegación entre pantallas.
+ * @param onEvent Función de devolución de llamada para manejar eventos relacionados con la lista de películas.
+ */
 @Composable
 fun now_playingMoviesScreen(
     movieListState: MovieListState,
     navController: NavHostController,
     onEvent: (MovieListUiEvent) -> Unit
 ) {
-
+    // Si la lista de películas en cartelera está vacía, muestra un indicador de progreso
     if (movieListState.nowPlayingMovieList.isEmpty()) {
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -32,6 +38,7 @@ fun now_playingMoviesScreen(
             CircularProgressIndicator()
         }
     } else {
+        // Si hay películas en la lista, muestra un LazyVerticalGrid con las películas
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             modifier = Modifier.fillMaxSize(),
@@ -45,6 +52,7 @@ fun now_playingMoviesScreen(
                 )
                 Spacer(modifier = Modifier.height(16.dp))
 
+                // Si se alcanza el final de la lista y no se están cargando más datos, se solicita paginación
                 if (index >= movieListState.nowPlayingMovieList.size - 1 && !movieListState.isLoading) {
                     onEvent(MovieListUiEvent.Paginate(Category.NOW_PLAYING))
                 }

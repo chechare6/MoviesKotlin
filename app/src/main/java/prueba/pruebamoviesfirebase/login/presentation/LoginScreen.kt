@@ -53,6 +53,13 @@ import prueba.pruebamoviesfirebase.login.utils.AuthRes
 import prueba.pruebamoviesfirebase.movieList.util.Screen
 import prueba.pruebamoviesfirebase.ui.theme.Purple40
 
+/**
+ * Composable que representa la pantalla de inicio de sesión en la aplicación.
+ *
+ * @param analytics Administrador de análisis para rastreo de eventos.
+ * @param auth Administrador de autenticación para gestionar la información del usuario.
+ * @param navigation Controlador de navegación para gestionar la navegación entre pantallas.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
@@ -60,15 +67,21 @@ fun LoginScreen(
     auth: AuthManager,
     navController: NavHostController
 ) {
+    // Registra la vista de pantalla en los análisis.
     analytics.LogScreenView(screenName = Screen.LogIn.route)
 
+    // Estados para almacenar el correo electrónico y la contraseña introducidos por el usuario.
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
+    // Obtiene el contexto actual.
     val context = LocalContext.current
+    // Ámbito de la coroutine para lanzar operaciones asíncronas.
     val scope = rememberCoroutineScope()
 
+    //Establecemos el diseño de la pantalla
     Box(modifier = Modifier.fillMaxSize()) {
+        // Texto con enlace para redirigir a la pantalla de registro.
         ClickableText(
             text = AnnotatedString("¿No tienes una cuenta? Regístrate"),
             modifier = Modifier
@@ -87,22 +100,26 @@ fun LoginScreen(
         )
     }
 
+    // Contenido principal de la pantalla.
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Logo de la APP.
         Image(
             painter = painterResource(id = R.drawable.ic_movie),
             contentDescription = "Movies Proyect",
             modifier = Modifier.size(100.dp)
         )
         Spacer(modifier = Modifier.height(10.dp))
+        // Título de la aplicación.
         Text(
             text = "Movies Proyect",
             style = TextStyle(fontSize = 30.sp)
         )
         Spacer(modifier = Modifier.height(30.dp))
+        // Campos de entrada para correo electrónico y contraseña.
         TextField(
             label = { Text(text = "Correo electrónico") },
             value = email,
@@ -119,6 +136,7 @@ fun LoginScreen(
         )
         Spacer(modifier = Modifier.height(20.dp))
 
+        // Botón para iniciar sesión con correo y contraseña.
         Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
             Button(
                 onClick = {
@@ -136,6 +154,7 @@ fun LoginScreen(
         }
         Spacer(modifier = Modifier.height(20.dp))
 
+        // Enlace para redirigir a la pantalla de recuperación de contraseña.
         ClickableText(
             text = AnnotatedString("¿Olvidaste tu contraseña?"),
             onClick = {
@@ -156,6 +175,7 @@ fun LoginScreen(
         Text(text = "-------- o --------", style = TextStyle(color = Color.Gray))
         Spacer(modifier = Modifier.height(25.dp))
 
+        // Botones para iniciar sesión como invitado y con Google.
         SocialMediaButton(
             onClick = {
                 scope.launch {
@@ -180,6 +200,9 @@ fun LoginScreen(
     }
 }
 
+/**
+ * Función para manejar la autenticación como invitado.
+ */
 private suspend fun incognitoSignIn(
     auth: AuthManager,
     analytics: AnalyticsManager,
@@ -200,6 +223,9 @@ private suspend fun incognitoSignIn(
     }
 }
 
+/**
+ * Función para manejar la autenticación con correo electrónico y contraseña.
+ */
 private suspend fun emailPassSignIn(
     email: String,
     password: String,
@@ -228,6 +254,14 @@ private suspend fun emailPassSignIn(
     }
 }
 
+/**
+ * Composable que representa un botón de inicio de sesión para redes sociales.
+ *
+ * @param onClick Acción a realizar al hacer clic en el botón.
+ * @param text Texto del botón.
+ * @param icon Recurso de icono para el botón.
+ * @param color Color de fondo del botón.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SocialMediaButton(
@@ -236,7 +270,10 @@ fun SocialMediaButton(
     icon: Int,
     color: Color
     ) {
+    // Estado para controlar el clic del botón.
     var click by remember { mutableStateOf(false) }
+
+    // Establecemos el diseño del boton.
     Surface (
         onClick = onClick,
         modifier = Modifier
@@ -253,6 +290,7 @@ fun SocialMediaButton(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
+            // Icono del botón.
             Icon(
                 painterResource(id = icon),
                 modifier = Modifier.size(24.dp),
@@ -260,6 +298,7 @@ fun SocialMediaButton(
                 tint = Color.Unspecified
             )
             Spacer(modifier = Modifier.width(8.dp))
+            // Texto del botón.
             Text(text = text, color = if(icon == R.drawable.ic_incognito) Color.White else Color.Black)
             click = true
         }

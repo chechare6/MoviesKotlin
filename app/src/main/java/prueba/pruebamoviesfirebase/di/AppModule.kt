@@ -20,14 +20,17 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
+    // Interceptor para realizar logging de las solicitudes HTTP.
     private val interceptor: HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
     }
 
+    // Cliente OkHttpClient con el interceptor añadido.
     private val client: OkHttpClient = OkHttpClient.Builder()
         .addInterceptor(interceptor)
         .build()
 
+    // Método para proveer una instancia de MovieApi utilizando Retrofit.
     @Provides
     @Singleton
     fun providesMovieApi() : MovieApi {
@@ -39,6 +42,7 @@ object AppModule {
             .create(MovieApi::class.java)
     }
 
+    // Método para proveer una instancia de MovieDatabase utilizando Room.
     @Provides
     @Singleton
     fun providesMovieDatabase(app: Application): MovieDatabase {
@@ -49,12 +53,14 @@ object AppModule {
         ).build()
     }
 
+    // Método para proveer una instancia de CommentDao utilizando Room.
     @Provides
     @Singleton
     fun provideCommentDao(database: CommentDatabase): CommentDao {
         return database.dao
     }
 
+    // Método para proveer una instancia de CommentDatabase utilizando Room.
     @Provides
     @Singleton
     fun providesCommentDatabase(app: Application): CommentDatabase {
@@ -64,5 +70,4 @@ object AppModule {
             "comments.db"
         ).build()
     }
-
 }
