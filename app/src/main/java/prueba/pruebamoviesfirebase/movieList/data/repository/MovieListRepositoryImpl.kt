@@ -14,11 +14,25 @@ import prueba.pruebamoviesfirebase.movieList.util.Resource
 import retrofit2.HttpException
 import javax.inject.Inject
 
+/**
+ * Implementación del repositorio que gestiona la obtención de la lista de películas desde una fuente remota o local.
+ *
+ * @param movieApi Instancia de [MovieApi] para realizar solicitudes a la API de películas.
+ * @param movieDatabase Instancia de [MovieDatabase] para acceder a la base de datos local de películas.
+ */
 class MovieListRepositoryImpl @Inject constructor(
     private val movieApi: MovieApi,
     private val movieDatabase: MovieDatabase
 ) : MovieListRepository {
 
+    /**
+     * Obtiene la lista de películas desde una fuente remota (API) o local (base de datos).
+     *
+     * @param forceFetchFromRemote Indica si se debe forzar la obtención de datos desde la fuente remota.
+     * @param category Categoría de las películas que se están buscando.
+     * @param page Número de página de resultados para paginación.
+     * @return Un [Flow] de [Resource] que contiene la lista de películas o un mensaje de error.
+     */
     override suspend fun getMovieList(
         forceFetchFromRemote: Boolean,
         category: String,
@@ -77,6 +91,12 @@ class MovieListRepositoryImpl @Inject constructor(
         }
     }
 
+    /**
+     * Obtiene los detalles de una película por su identificador único.
+     *
+     * @param id Identificador único de la película.
+     * @return Un [Flow] de [Resource] que contiene los detalles de la película o un mensaje de error.
+     */
     override suspend fun getMovie(id: Int): Flow<Resource<Movie>> {
         return flow {
 

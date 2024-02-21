@@ -10,7 +10,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 
-//Barra de puntuación - Clase para su visualización
+/**
+ * Barra de puntuación que muestra estrellas llenas, medias y vacías según la puntuación proporcionada.
+ *
+ * @param modifier [Modifier] para aplicar a la barra de puntuación.
+ * @param starsModifier [Modifier] para aplicar a cada estrella individual.
+ * @param rating Puntuación que determina el número de estrellas llenas.
+ * @param stars Número total de estrellas en la barra.
+ * @param starsColor Color de las estrellas.
+ */
 @Composable
 fun RatingBar(
     modifier: Modifier = Modifier,
@@ -25,6 +33,7 @@ fun RatingBar(
     val halfStar = !(rating.rem(1).equals(0.0))
 
     Row(modifier = modifier) {
+        // Estrellas llenas
         repeat(filledStars) {
             Icon(
                 modifier = starsModifier,
@@ -33,6 +42,7 @@ fun RatingBar(
                 tint = starsColor
             )
         }
+        // Estrella media (si es necesario)
         if (halfStar) {
             Icon(
                 modifier = starsModifier,
@@ -41,6 +51,7 @@ fun RatingBar(
                 tint = starsColor
             )
         }
+        // Estrellas vacías
         repeat(unfilledStars) {
             Icon(
                 modifier = starsModifier,

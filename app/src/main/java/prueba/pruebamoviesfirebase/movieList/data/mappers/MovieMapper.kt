@@ -4,6 +4,12 @@ import prueba.pruebamoviesfirebase.movieList.data.local.movie.MovieEntity
 import prueba.pruebamoviesfirebase.movieList.data.remote.respond.MovieDto
 import prueba.pruebamoviesfirebase.movieList.domain.model.Movie
 
+/**
+ * Convierte un objeto [MovieDto] a una entidad [MovieEntity] asignándole una categoría específica.
+ *
+ * @param category La categoría asignada a la película.
+ * @return Una instancia de [MovieEntity] con los datos del [MovieDto].
+ */
 fun MovieDto.toMovieEntity(
     category: String
 ): MovieEntity {
@@ -32,6 +38,12 @@ fun MovieDto.toMovieEntity(
     )
 }
 
+/**
+ * Convierte una entidad [MovieEntity] a un objeto [Movie] asignándole una categoría específica.
+ *
+ * @param category La categoría asignada a la película.
+ * @return Una instancia de [Movie] con los datos de [MovieEntity].
+ */
 fun MovieEntity.toMovie(
     category: String
 ): Movie {

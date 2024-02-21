@@ -13,21 +13,41 @@ import prueba.pruebamoviesfirebase.movieList.domain.repository.MovieListReposito
 import prueba.pruebamoviesfirebase.movieList.util.Resource
 import javax.inject.Inject
 
+/**
+ * ViewModel encargado de gestionar la lógica de presentación y el estado relacionado con los detalles de una película.
+ *
+ * @property movieListRepository Repositorio que proporciona acceso a los datos relacionados con las películas.
+ * @property savedStateHandle Maneja y proporciona acceso al estado guardado entre configuraciones (por ejemplo, rotaciones de pantalla).
+ */
 @HiltViewModel
 class DetailsViewModel @Inject constructor(
     private val movieListRepository: MovieListRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
+    /**
+     * Identificador de la película actualmente mostrada en los detalles.
+     */
     private val movieId = savedStateHandle.get<Int>("movieId")
 
+    /**
+     * Un [MutableStateFlow] que representa el estado de los detalles de la película.
+     */
     private var _detailsState = MutableStateFlow(DetailsState())
     val detailsState = _detailsState.asStateFlow()
 
+    /**
+     * Inicializa el ViewModel obteniendo los detalles de la película actual.
+     */
     init {
         getMovie(movieId ?: -1)
     }
 
+    /**
+     * Obtiene los detalles de una película específica del repositorio.
+     *
+     * @param id El identificador de la película.
+     */
     private fun getMovie(id: Int) {
         viewModelScope.launch {
             _detailsState.update {

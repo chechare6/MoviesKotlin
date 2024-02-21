@@ -13,18 +13,23 @@ import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.graphics.ColorUtils
 
-//Interpreta los colores de la imagen para poner de fondo el color más habitual en la misma
-//podriamos aprovecharlo
+/**
+ * Calcula el color promedio de una [ImageBitmap] y devuelve un color ligeramente más oscuro.
+ *
+ * @param imageBitmap [ImageBitmap] de la cual se calculará el color promedio.
+ * @return [Color] que representa el color promedio ajustado a un tono más oscuro.
+ */
 @Composable
 fun getAverageColor(imageBitmap: ImageBitmap): Color {
     var averageColor by remember { mutableStateOf(Color.Transparent) }
 
+    // Este bloque se ejecutará cuando el composable se vuelva activo
     LaunchedEffect(Unit) {
-
+        // Convierte la ImageBitmap a un Bitmap de Android
         val compatibleBitmap = imageBitmap.asAndroidBitmap()
             .copy(Bitmap.Config.ARGB_8888, false)
 
-        // Retrieve the pixels from the compatible Bitmap
+        // Recupera los píxeles del Bitmap compatible
         val pixels = IntArray(compatibleBitmap.width * compatibleBitmap.height)
         compatibleBitmap.getPixels(
             pixels, 0, compatibleBitmap.width, 0, 0,
@@ -35,7 +40,7 @@ fun getAverageColor(imageBitmap: ImageBitmap): Color {
         var greenSum = 0
         var blueSum = 0
 
-        // Calculate the sum of RGB values
+        // Calcula la suma de los valores RGB
         for (pixel in pixels) {
             val red = android.graphics.Color.red(pixel)
             val green = android.graphics.Color.green(pixel)
@@ -46,23 +51,23 @@ fun getAverageColor(imageBitmap: ImageBitmap): Color {
             blueSum += blue
         }
 
-        // Calculate the average RGB values
+        // Calcula los valores RGB promedio
         val pixelCount = pixels.size
         val averageRed = redSum / pixelCount
         val averageGreen = greenSum / pixelCount
         val averageBlue = blueSum / pixelCount
 
-        // Set the average color as the result
+        // Establece el color promedio como resultado
         averageColor = Color(averageRed, averageGreen, averageBlue)
     }
 
     val hsl = FloatArray(3)
     ColorUtils.colorToHSL(averageColor.toArgb(), hsl)
 
-    // Decrease the lightness component by a desired amount
-    val darkerLightness = hsl[2] - 0.1f // Adjust the amount to make it darker
+    // Disminuye el componente de luminosidad en una cantidad deseada
+    val darkerLightness = hsl[2] - 0.1f // Ajusta la cantidad para hacerlo más oscuro
 
-    // Create a new color with the modified lightness component
+    // Crea un nuevo color con el componente de luminosidad modificado
     val darkerColor = ColorUtils.HSLToColor(
         floatArrayOf(
             hsl[0],
